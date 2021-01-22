@@ -16,17 +16,10 @@ train {
             "export PATH=/root/miniconda/bin:$PATH",
             "conda env update -f environment.yaml",
             "echo trying to source conda",
-            "conda info | grep -i 'base environment'",
-            "cat /root/miniconda/etc/profile.d/conda.sh",
-            "echo changing to bash",
-            "bash",
-            "echo trying to source conda",
             "/bin/bash -c 'source /root/miniconda/etc/profile.d/conda.sh'",
-            "echo attempting conda activate",
-            "conda activate veritas",
-            "echo completed environment setup"
+            "almost completed environment setup"
         ]
-        script = [{sh = ["python train.py"]}]
+        script = [{sh = ["/bin/bash -c 'source /root/miniconda/etc/profile.d/conda.sh' && conda activate veritas && python train.py"]}]
         resources {
             cpu = "1.0"
             memory = "4G"
