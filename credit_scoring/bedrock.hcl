@@ -13,11 +13,14 @@ train {
             "echo installed miniconda",
             "rm ~/miniconda.sh",
             "echo attempting conda env",
-            "/root/miniconda/bin/conda env update -f environment.yaml",
+            "export PATH=/root/miniconda/bin:$PATH",
+            "conda env update -f environment.yaml",
             "echo trying to source conda",
-            ". /root/miniconda/etc/profile.d/conda.sh",
-            "echo attempting source activate",
-            ". activate veritas",
+            "conda info | grep -i 'base environment'"
+            "cat /root/miniconda/etc/profile.d/conda.sh",
+            "source /root/miniconda/etc/profile.d/conda.sh"
+            "echo attempting conda activate",
+            "conda activate veritas",
             "echo completed environment setup"
         ]
         script = [{sh = ["python train.py"]}]
