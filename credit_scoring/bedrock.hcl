@@ -1,3 +1,6 @@
+# IMPORTANT: Displays pipeline version on Bedrock UI
+version = "1.0"
+
 train {
     step train {
         image = "basisai/workload-standard:v0.2.2"
