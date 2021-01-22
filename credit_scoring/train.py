@@ -87,6 +87,7 @@ def main():
         fairness_metrics,
     ) = compute_log_metrics(model[1], X_train, X_test, y_test, model_name="logreg_model", model_type=ModelTypes.LINEAR)
 
+    # IMPORTANT TO SHOW ON UI
     print("Saving model!")
 
     with open(OUTPUT_MODEL_PATH, "wb") as model_file:
