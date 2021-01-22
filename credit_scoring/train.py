@@ -87,4 +87,9 @@ def main():
     print("Done!")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
+        print("Hmm something went wrong...")
+        print("What?!")
