@@ -21,7 +21,7 @@ train {
             "echo changing to bash",
             "bash",
             "echo trying to source conda",
-            "source /root/miniconda/etc/profile.d/conda.sh",
+            "/bin/bash -c source /root/miniconda/etc/profile.d/conda.sh",
             "echo attempting conda activate",
             "conda activate veritas",
             "echo completed environment setup"
