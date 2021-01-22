@@ -18,7 +18,7 @@ train {
             "echo trying to source conda",
             "conda info | grep -i 'base environment'",
             "cat /root/miniconda/etc/profile.d/conda.sh",
-            "source /root/miniconda/etc/profile.d/conda.sh"
+            "source /root/miniconda/etc/profile.d/conda.sh",
             "echo attempting conda activate",
             "conda activate veritas",
             "echo completed environment setup"
