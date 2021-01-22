@@ -14,5 +14,5 @@ train {
             memory = "1G"
         }
     }
-
+}
 
