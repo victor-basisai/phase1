@@ -14,7 +14,7 @@ train {
             "rm ~/miniconda.sh",
             "echo attempting conda env",
             "export PATH=/root/miniconda/bin:$PATH",
-            "conda env update -f environment.yaml",
+            "conda env update -f environment-deploy.yaml",
             "echo trying to source conda",
             "/bin/bash -c 'source /root/miniconda/etc/profile.d/conda.sh'",
             "echo almost completed environment setup"
