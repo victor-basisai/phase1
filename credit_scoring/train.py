@@ -88,6 +88,7 @@ def main():
 
 if __name__ == "__main__":
     try:
+        print("Hello world")
         main()
     except Exception as e:
         print(e)
