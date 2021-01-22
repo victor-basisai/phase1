@@ -16,7 +16,7 @@ train {
             "export PATH=/root/miniconda/bin:$PATH",
             "conda env update -f environment.yaml",
             "echo trying to source conda",
-            "conda info | grep -i 'base environment'"
+            "conda info | grep -i 'base environment'",
             "cat /root/miniconda/etc/profile.d/conda.sh",
             "source /root/miniconda/etc/profile.d/conda.sh"
             "echo attempting conda activate",
