@@ -19,7 +19,7 @@ train {
             "/bin/bash -c 'source /root/miniconda/etc/profile.d/conda.sh'",
             "echo almost completed environment setup"
         ]
-        script = [{sh = ["/bin/bash -c 'source /root/miniconda/etc/profile.d/conda.sh' && conda activate veritas && python train.py"]}]
+        script = [{sh = ["/root/miniconda/envs/veritas/bin/python train.py"]}]
         resources {
             cpu = "1.0"
             memory = "4G"
