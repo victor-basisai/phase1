@@ -15,7 +15,7 @@ train {
             "echo attempting conda env",
             "/root/miniconda/bin/conda env update -f environment.yaml",
             "echo attempting conda activate",
-            "source /root/miniconda/etc/profile.d/conda.sh",
+            ". /root/miniconda/etc/profile.d/conda.sh",
             "/root/miniconda/bin/conda activate veritas",
             "echo installation completed"
         ]
