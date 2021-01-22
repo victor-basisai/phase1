@@ -19,8 +19,11 @@ from bedrock_client.bedrock.analyzer.model_analyzer import ModelAnalyzer
 from bedrock_client.bedrock.analyzer import ModelTypes
 from bedrock_client.bedrock.api import BedrockApi
 from bedrock_client.bedrock.metrics.service import ModelMonitoringService
-
+import pickle
 import logging
+
+OUTPUT_MODEL_PATH = "/artefact/model.pkl"
+FEATURE_COLS_PATH = "/artefact/feature_cols.pkl"
 
 CONFIG_FAI = {
     'SEX': {
@@ -83,6 +86,15 @@ def main():
         global_explainability, 
         fairness_metrics,
     ) = compute_log_metrics(model[1], X_train, X_test, y_test, model_name="logreg_model", model_type=ModelTypes.LINEAR)
+
+    print("Saving model!")
+
+    with open(OUTPUT_MODEL_PATH, "wb") as model_file:
+        pickle.dump(model[1], model_file)
+
+    # Save feature names
+    # with open(FEATURE_COLS_PATH, "wb") as file:
+    #     pickle.dump(feature_cols, file)
 
     print("Done!")
 
