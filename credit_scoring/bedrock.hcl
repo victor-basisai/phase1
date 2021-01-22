@@ -16,9 +16,9 @@ train {
             "/root/miniconda/bin/conda env update -f environment.yaml",
             "echo trying to source conda",
             ". /root/miniconda/etc/profile.d/conda.sh",
-            "echo attempting conda activate",
-            "/root/miniconda/bin/conda activate veritas",
-            "echo installation completed"
+            "echo attempting source activate",
+            ". activate veritas",
+            "echo completed environment setup"
         ]
         script = [{sh = ["python train.py"]}]
         resources {
