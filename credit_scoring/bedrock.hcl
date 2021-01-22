@@ -20,8 +20,8 @@ train {
         ]
         script = [{sh = ["python train.py"]}]
         resources {
-            cpu = "0.5"
-            memory = "1G"
+            cpu = "1.0"
+            memory = "4G"
         }
     }
 }
