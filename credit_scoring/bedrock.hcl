@@ -12,7 +12,7 @@ train {
             "export PATH=/root/miniconda/bin:$PATH",
             "conda env update -f environment-deploy.yaml",
             "eval \"$(conda shell.bash hook)\"",
-            "conda activate myenvironment"        ]
+            "conda activate veritas"        ]
         script = [{sh = ["python train.py"]}]
         resources {
             cpu = "1.0"
