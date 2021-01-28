@@ -11,9 +11,9 @@ train {
             "rm ~/miniconda.sh",
             "export PATH=$HOME/miniconda/bin:$PATH",
             "conda env update -f environment-deploy.yaml",
-            "eval \"$(conda shell.bash hook)\"",
-            "conda activate veritas"        ]
-        script = [{sh = ["python train.py"]}]
+            "eval \"$(conda shell.bash hook)\""
+        ]
+        script = [{sh = ["~/miniconda/envs/veritas/bin/python train.py"]}]
         resources {
             cpu = "1.0"
             memory = "4G"
