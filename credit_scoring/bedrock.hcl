@@ -10,7 +10,7 @@ train {
             "bash ~/miniconda.sh -b -p ~/miniconda",
             "rm ~/miniconda.sh",
             "export PATH=$HOME/miniconda/bin:$PATH",
-            "conda env update -f environment-deploy.yaml",
+            "conda env update -f environment-train.yaml",
             "eval \"$(conda shell.bash hook)\"",
             "conda activate veritas"
         ]
@@ -22,3 +22,20 @@ train {
     }
 }
 
+serve {
+    image = "continuumio/miniconda"
+    install = [
+        "conda env update -f environment-deploy.yaml",
+        "eval \"$(conda shell.bash hook)\"",
+        "conda activate veritas"
+    ]
+    script = [
+        {sh = [
+            "gunicorn --bind=:${BEDROCK_SERVER_PORT:-8080} --worker-class=gthread --workers=${WORKERS} --timeout=300 --preload serve_http:app"
+        ]}
+    ]
+    
+    parameters {
+        WORKERS = "1"
+    }
+}
