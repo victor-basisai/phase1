@@ -26,7 +26,6 @@ serve {
     image = "continuumio/miniconda"
     install = [
         "conda env update -f environment-deploy.yaml",
-        "eval \"$(conda shell.bash hook)\"",
         "conda activate veritas"
     ]
     script = [
