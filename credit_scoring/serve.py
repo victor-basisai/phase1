@@ -5,8 +5,7 @@ import pickle
 import numpy as np
 from flask import Flask, request
 
-FEATURES = [
-    'ID',
+FEATURES = [ 
     'LIMIT_BAL',
     'SEX',
     'EDUCATION',
