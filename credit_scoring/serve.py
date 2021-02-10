@@ -3,9 +3,11 @@ Script for serving.
 """
 import pickle
 import numpy as np
+import json
 from flask import Flask, Response, current_app, request
 from bedrock_client.bedrock.metrics.service import ModelMonitoringService
 
+OUTPUT_MODEL_PATH = "/artefact/model.pkl"
 
 FEATURES = [ 
     'LIMIT_BAL',
@@ -33,9 +35,6 @@ FEATURES = [
     'PAY_AMT6'
 ]
 
-OUTPUT_MODEL_PATH = "/artefact/model.pkl"
-
-
 def predict_prob(features,
                  model=pickle.load(open(OUTPUT_MODEL_PATH, "rb"))):
     """Predict credit risk score given features.
@@ -59,9 +58,9 @@ def predict_prob(features,
 
         # Log the prediction
         current_app.monitor.log_prediction(
-            request_body=json.dumps(request_json),
-            features=row_feats.values[0],
-            output=prob,
+            request_body=json.dumps(features),
+            features=row_feats,
+            output=score_prob,
         )
 
         return score_prob
@@ -70,7 +69,6 @@ def predict_prob(features,
 
 # pylint: disable=invalid-name
 app = Flask(__name__)
-
 
 @app.before_first_request
 def init_background_threads():
@@ -89,15 +87,18 @@ def get_metrics():
     )
     return Response(body, content_type=content_type)
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET", "POST"])
 def get_score():
     """Returns the `score_prob` given the some features"""
 
-    features = request.json
-    result = {
-        "score_prob": predict_prob(features)
-    }
-    return result
+    if request.method == 'POST':
+        features = request.json
+        result = {
+            "score_prob": predict_prob(features)
+        }
+        return result
+    else:
+        return "<h1 style='color:blue'>Hello Model Server!</h1>"
 
 
 def main():
