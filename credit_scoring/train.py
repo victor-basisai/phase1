@@ -87,15 +87,23 @@ def main():
         fairness_metrics,
     ) = compute_log_metrics(model[1], X_train, X_test, y_test, model_name="logreg_model", model_type=ModelTypes.LINEAR)
 
-    # IMPORTANT TO SHOW ON UI
+    # IMPORTANT: EVALUATE MODEL ON UI
     print("Saving model!")
-
     with open(OUTPUT_MODEL_PATH, "wb") as model_file:
         pickle.dump(model[1], model_file)
 
     # Save feature names
     # with open(FEATURE_COLS_PATH, "wb") as file:
     #     pickle.dump(feature_cols, file)
+
+    # IMPORTANT: LOG TRAINING MODEL ON UI to compare to DEPLOYED MODEL
+    X_prob = model.predict_proba(X_train)[:, 1]
+    X_pred = (X_prob > 0.5).astype(int)
+
+    ModelMonitoringService.export_text(
+        features=X_train.iteritems(),
+        inference=X_pred.tolist(),
+    )
 
     print("Done!")
 
