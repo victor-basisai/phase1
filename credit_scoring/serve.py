@@ -35,7 +35,7 @@ FEATURES = [
     'PAY_AMT6'
 ]
 
-def predict_prob(features,
+def predict_prob(features_json,
                  model=pickle.load(open(OUTPUT_MODEL_PATH, "rb"))):
     """Predict credit risk score given features.
     Args:
@@ -44,9 +44,10 @@ def predict_prob(features,
     Returns:
         score_prob (float): credit risk probability
     """
+    # Parse features_json
     row_feats = list()
     for col in FEATURES:
-        row_feats.append(features[col])
+        row_feats.append(features_json[col])
     
     if row_feats is not None:
         # Score
@@ -58,7 +59,7 @@ def predict_prob(features,
 
         # Log the prediction
         current_app.monitor.log_prediction(
-            request_body=json.dumps(features),
+            request_body=json.dumps(features_json),
             features=row_feats,
             output=score_prob,
         )
@@ -77,6 +78,7 @@ def init_background_threads():
     """
     current_app.monitor = ModelMonitoringService()
 
+
 @app.route("/metrics", methods=["POST"])
 def get_metrics():
     """Returns real time feature values recorded by prometheus
@@ -86,6 +88,17 @@ def get_metrics():
         headers=request.headers,
     )
     return Response(body, content_type=content_type)
+
+
+@app.route("/infer", methods=["POST"])
+def get_inference():
+    """Returns the model inference score given some features in JSON
+    """
+    features_json = request.json
+    result = {
+        "score_prob": predict_prob(features_json)
+    }
+    return result
 
 
 @app.route("/", methods=["GET"])
