@@ -35,36 +35,29 @@ FEATURES = [
     'PAY_AMT6'
 ]
 
-def predict_prob(features_json,
+def predict_prob(request_json,
                  model=pickle.load(open(OUTPUT_MODEL_PATH, "rb"))):
     """Predict credit risk score given features.
     Args:
-        features (dict)
+        request_json (dict)
         model
     Returns:
         score_prob (float): credit risk probability
     """
-    # Parse features_json
-    row_feats = list()
+    # Parse request_json
+    features = list()
     for col in FEATURES:
-        row_feats.append(features_json[col])
+        features.append(request_json[col])
     
-    if row_feats is not None:
+    if features is not None:
         # Score
         score_prob = (
             model
-            .predict_proba(np.array(row_feats).reshape(1, -1))[:, 1]
+            .predict_proba(np.array(features).reshape(1, -1))[:, 1]
             .item()
         )
 
-        # Log the prediction
-        current_app.monitor.log_prediction(
-            request_body=json.dumps(features_json),
-            features=row_feats,
-            output=score_prob,
-        )
-
-        return score_prob
+        return features, score_prob
     return np.NaN
 
 
@@ -79,7 +72,7 @@ def init_background_threads():
     current_app.monitor = ModelMonitoringService()
 
 
-@app.route("/metrics", methods=["POST"])
+@app.route("/metrics", methods=["GET"])
 def get_metrics():
     """Returns real time feature values recorded by prometheus
     """
@@ -93,10 +86,20 @@ def get_metrics():
 @app.route("/infer", methods=["POST"])
 def get_inference():
     """Returns the model inference score given some features in JSON
-    """
-    features_json = request.json
+    """    
+    # Perform inference
+    features, score_prob = predict_prob(request.json)
+    
+    # Log the prediction
+    current_app.monitor.log_prediction(
+        request_body=request.json,
+        features=features,
+        output=score_prob,
+    )
+
+    # Return the result
     result = {
-        "score_prob": predict_prob(features_json)
+        "inference": score_prob
     }
     return result
 
