@@ -77,7 +77,7 @@ def init_background_threads():
     """
     current_app.monitor = ModelMonitoringService()
 
-@app.route("/metrics", methods=["GET"])
+@app.route("/metrics", methods=["POST"])
 def get_metrics():
     """Returns real time feature values recorded by prometheus
     """
@@ -87,18 +87,11 @@ def get_metrics():
     )
     return Response(body, content_type=content_type)
 
-@app.route("/", methods=["GET", "POST"])
-def get_score():
-    """Returns the `score_prob` given the some features"""
 
-    if request.method == 'POST':
-        features = request.json
-        result = {
-            "score_prob": predict_prob(features)
-        }
-        return result
-    else:
-        return "<h1 style='color:blue'>Hello Model Server!</h1>"
+@app.route("/", methods=["GET"])
+def get_score():
+    """Returns the help page"""
+    return "<h1 style='color:blue'>Hello Model Server!</h1>"
 
 
 def main():
