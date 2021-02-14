@@ -1,7 +1,6 @@
 # IMPORTANT: Displays pipeline version on Bedrock UI
 version = "1.0"
 
-# "export PATH=~/miniconda/bin:$PATH"
 train {
     step train {
         image = "basisai/workload-standard:v0.2.2"
@@ -18,6 +17,9 @@ train {
         resources {
             cpu = "1.0"
             memory = "4G"
+        }
+        parameters {
+            TRAINING_DATA_AWS_BUCKET = "s3://veritas-credit-scoring/data/training/latest"
         }
     }
 }

@@ -1,5 +1,5 @@
 """
-Script for serving.
+Flask app for serving a model version
 """
 import pickle
 import numpy as np
@@ -7,8 +7,13 @@ import json
 from flask import Flask, Response, current_app, request
 from bedrock_client.bedrock.metrics.service import ModelMonitoringService
 
-OUTPUT_MODEL_PATH = "/artefact/model.pkl"
+# ---------------------------------
+# Constants
+# ---------------------------------
 
+MODEL_PATH = "/artefact/model.pkl"
+
+# Ordered list of model features
 FEATURES = [ 
     'LIMIT_BAL',
     'SEX',
@@ -35,33 +40,38 @@ FEATURES = [
     'PAY_AMT6'
 ]
 
-def predict_prob(request_json,
-                 model=pickle.load(open(OUTPUT_MODEL_PATH, "rb"))):
-    """Predict credit risk score given features.
+# ---------------------------------
+# Helper functions for inferencing
+# ---------------------------------
+
+def predict_proba(request_json,
+                 model=pickle.load(open(MODEL_PATH, "rb"))):
+    """Predict the class probabilities using a model and input data.
     Args:
         request_json (dict)
         model
     Returns:
         score_prob (float): credit risk probability
     """
-    # Parse request_json
+    # Parse request_json into ordered list
     features = list()
     for col in FEATURES:
         features.append(request_json[col])
     
+    # Predict class probabilities for input data
     if features is not None:
-        # Score
-        score_prob = (
+        predicted_prob = (
             model
             .predict_proba(np.array(features).reshape(1, -1))[:, 1]
             .item()
         )
-
-        return features, score_prob
+        return features, predicted_prob
     return np.NaN
 
+# ---------------------------------
+# Flask Web App
+# ---------------------------------
 
-# pylint: disable=invalid-name
 app = Flask(__name__)
 
 @app.before_first_request
@@ -69,12 +79,13 @@ def init_background_threads():
     """Global objects with daemon threads will be stopped by gunicorn --preload flag.
     So instantiate them here instead.
     """
+    # Initialise the Bedrock Model Monitoring Service
     current_app.monitor = ModelMonitoringService()
 
 
 @app.route("/metrics", methods=["GET"])
 def get_metrics():
-    """Returns real time feature values recorded by prometheus
+    """Returns real time feature values recorded by Prometheus
     """
     body, content_type = current_app.monitor.export_http(
         params=request.args.to_dict(flat=False),
@@ -85,21 +96,21 @@ def get_metrics():
 
 @app.route("/infer", methods=["POST"])
 def get_inference():
-    """Returns the model inference score given some features in JSON
+    """Returns the predicted class probabilies given some input data in JSON
     """    
     # Perform inference
-    features, score_prob = predict_prob(request.json)
+    features, predicted_proba = predict_proba(request.json)
     
-    # Log the prediction
+    # Log the prediction for Bedrock
     current_app.monitor.log_prediction(
         request_body=request.json,
         features=features,
-        output=score_prob,
+        output=predicted_proba,
     )
 
     # Return the result
     result = {
-        "inference": score_prob
+        "predicted_proba": predicted_proba
     }
     return result
 
@@ -107,11 +118,11 @@ def get_inference():
 @app.route("/", methods=["GET"])
 def get_score():
     """Returns the help page"""
-    return "<h1 style='color:blue'>Hello Model Server!</h1>"
+    return "<h1 style='color:blue'>Hello Veritas Model Server!</h1>"
 
 
 def main():
-    """Starts the Http server"""
+    """Starts the HTTP server"""
     app.run()
 
 
