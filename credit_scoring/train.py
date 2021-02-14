@@ -120,7 +120,7 @@ def main():
         global_explainability, 
         fairness_metrics,
     ) = compute_log_metrics(model=model, x_train=x_train, 
-                            x_val=x_test, y_val=y_test, 
+                            x_test=x_test, y_test=y_test, 
                             best_th=best_th,
                             model_name=model_name, model_type=model_type)
 
