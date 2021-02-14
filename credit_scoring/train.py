@@ -73,8 +73,8 @@ def compute_log_metrics(model, x_train,
     bedrock.log_metric("Accuracy", acc)
     bedrock.log_metric("ROC AUC", roc_auc)
     bedrock.log_metric("Avg precision", avg_prc)
-    bedrock.log_chart_data(y_val.astype(int).tolist(),
-                           y_prob.flatten().tolist())
+    bedrock.log_chart_data(y_test.astype(int).tolist(),
+                           test_prob.flatten().tolist())
 
     # Bedrock Model Analyzer: generates model explainability and fairness metrics
     # Requires model object from pipeline to be passed in
